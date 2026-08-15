@@ -1,0 +1,321 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 400px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+/* ── Screens ─────────────────────────────────────────── */
+
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── Header ──────────────────────────────────────────── */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #1f2937;
+  border-bottom: 1px solid #374151;
+  flex-shrink: 0;
+}
+
+.logo { font-size: 22px; line-height: 1; }
+
+h1 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f87171;
+  letter-spacing: -0.3px;
+}
+
+#back-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+#back-btn:hover { background: #374151; color: #e5e7eb; }
+
+/* ── Home tools grid ─────────────────────────────────── */
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 14px;
+}
+
+.tool-btn {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  color: #d1d5db;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 13px 12px;
+  text-align: left;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.tool-btn:hover {
+  background: #374151;
+  border-color: #f87171;
+  color: #fff;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 11px;
+  color: #4b5563;
+  border-top: 1px solid #1f2937;
+}
+
+/* ── Tool screen content ─────────────────────────────── */
+
+#tool-content {
+  padding: 14px;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Form fields ─────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  color: #e5e7eb;
+  font-size: 13px;
+  padding: 8px 10px;
+  width: 100%;
+  transition: border-color 0.12s;
+}
+.field input[type="text"]:focus,
+.field input[type="number"]:focus,
+.field select:focus {
+  outline: none;
+  border-color: #f87171;
+}
+.field select option { background: #1f2937; }
+
+.field input[type="color"] {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  cursor: pointer;
+  height: 36px;
+  padding: 2px 4px;
+  width: 100%;
+}
+
+.field input[type="file"] {
+  color: #9ca3af;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.field input[type="file"]::-webkit-file-upload-button {
+  background: #374151;
+  border: none;
+  border-radius: 5px;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 8px;
+  padding: 4px 10px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+.row > * { flex: 1; }
+.row > button { flex: none; }
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.primary {
+  background: #ef4444;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  transition: background 0.12s;
+  width: 100%;
+}
+.primary:hover { background: #dc2626; }
+.primary:disabled { background: #4b5563; cursor: default; }
+
+.secondary {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  color: #d1d5db;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 7px 12px;
+}
+.secondary:hover { background: #374151; }
+.secondary:disabled { opacity: 0.5; cursor: default; }
+
+.icon-btn {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 5px;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 3px 9px;
+  transition: background 0.1s;
+}
+.icon-btn:hover { background: #374151; }
+
+/* ── Status messages ─────────────────────────────────── */
+
+.status {
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 0;
+  padding: 0;
+}
+.status:not(:empty) { padding: 7px 10px; }
+.status.info     { background: #1e3a5f; color: #93c5fd; }
+.status.success  { background: #14532d; color: #86efac; }
+.status.error    { background: #450a0a; color: #fca5a5; }
+
+/* ── File list (merge, img2pdf) ──────────────────────── */
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+.file-item {
+  align-items: center;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  cursor: grab;
+  display: flex;
+  font-size: 12px;
+  gap: 6px;
+  padding: 6px 10px;
+  user-select: none;
+}
+.file-item.dragging { opacity: 0.35; border-style: dashed; }
+.file-item:hover { border-color: #6b7280; }
+
+.drag-handle { color: #6b7280; flex-shrink: 0; }
+
+/* ── Page grid (reorder) ─────────────────────────────── */
+
+.page-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.page-item {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  cursor: grab;
+  min-width: 44px;
+  padding: 8px 12px;
+  text-align: center;
+  user-select: none;
+  transition: border-color 0.1s;
+}
+.page-item:hover { border-color: #f87171; }
+.page-item.dragging { opacity: 0.35; border-style: dashed; }
+
+.page-num { font-weight: 700; color: #f87171; font-size: 15px; }
+
+/* ── Rotate page rows ────────────────────────────────── */
+
+.rotate-rows {
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #374151;
+  border-radius: 7px;
+}
+
+.rotate-row {
+  align-items: center;
+  border-bottom: 1px solid #1f2937;
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+.rotate-row:last-child { border-bottom: none; }
+.rotate-row .page-label { flex: 1; color: #9ca3af; }
+.rot-label { min-width: 32px; text-align: center; color: #6b7280; font-size: 12px; }
+
+/* ── Metadata box ────────────────────────────────────── */
+
+.metadata-box {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 7px;
+  font-size: 12px;
+  line-height: 1.9;
+  padding: 8px 12px;
+}
+.metadata-box b { color: #9ca3af; }
+
+/* ── Hints ───────────────────────────────────────────── */
+
+.hint {
+  color: #4b5563;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ── Misc ────────────────────────────────────────────── */
+
+.page-count { color: #6b7280; font-size: 12px; }

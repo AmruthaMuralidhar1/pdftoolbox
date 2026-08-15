@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Forge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f2f0eb;
+      --surface:  #ffffff;
+      --border:   #e0ddd6;
+      --text:     #17161a;
+      --muted:    #706c68;
+      --faint:    #bab6b0;
+      --dot:      rgba(0,0,0,0.055);
+      --accent:   #5c4af6;
+      --acc-h:    #4836e0;
+      --acc-soft: rgba(92, 74, 246, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg:       #141312;
+      --surface:  #1e1c1b;
+      --border:   #2c2a28;
+      --text:     #eeebe6;
+      --muted:    #8a8680;
+      --faint:    #46433f;
+      --dot:      rgba(255,255,255,0.03);
+      --accent:   #7c6df8;
+      --acc-h:    #9180fa;
+      --acc-soft: rgba(124, 109, 248, 0.1);
+    }
+
+    html { transition: background .2s, color .2s; }
+
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+      background-size: 26px 26px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .nav-sep {
+      background: var(--border);
+      height: 14px;
+      margin: 0 14px;
+      width: 1px;
+    }
+
+    .nav-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .theme-btn {
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      gap: 6px;
+      margin-left: auto;
+      padding: 5px 13px;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .theme-btn:hover { background: var(--border); color: var(--text); }
+
+    .theme-icon { font-size: 14px; line-height: 1; }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 40px 80px;
+    }
+
+    .intro {
+      margin-bottom: 48px;
+    }
+
+    .intro h1 {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    .intro h1 span {
+      color: var(--accent);
+    }
+
+    .intro p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .tools-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .tool-row {
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: grid;
+      gap: 0;
+      grid-template-columns: 56px 1fr 1.6fr 40px;
+      padding: 0;
+      transition: background .12s;
+      text-align: left;
+      width: 100%;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      color: inherit;
+      font-family: inherit;
+    }
+
+    .tool-row:last-child { border-bottom: none; }
+
+    .tool-row:hover { background: var(--acc-soft); }
+    .tool-row:hover .t-name { color: var(--accent); }
+    .tool-row:hover .t-arrow { transform: translateX(4px); color: var(--accent); }
+
+    .t-num {
+      border-right: 1px solid var(--border);
+      color: var(--faint);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 18px 0;
+      text-align: center;
+    }
+
+    .t-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      padding: 18px 20px;
+      transition: color .12s;
+    }
+
+    .t-desc {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 18px 20px 18px 0;
+    }
+
+    .t-arrow {
+      color: var(--faint);
+      font-size: 16px;
+      padding-right: 18px;
+      text-align: right;
+      transition: transform .15s, color .12s;
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 20px; }
+      main { padding: 36px 20px 60px; }
+      .intro h1 { font-size: 28px; }
+      .tool-row { grid-template-columns: 44px 1fr 32px; }
+      .t-desc { display: none; }
+    }
+
+    /* overlay + dialog */
+    .overlay {
+      background: rgba(20, 19, 18, 0.45);
+      display: none;
+      inset: 0;
+      position: fixed;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+
+    .overlay.open { display: flex; }
+
+    .dialog {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.18);
+      max-height: 90vh;
+      overflow-y: auto;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .dlg-head {
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      padding: 18px 22px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+
+    .dlg-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    .dlg-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 20px;
+      line-height: 1;
+      padding: 0;
+      transition: color .1s;
+    }
+    .dlg-close:hover { color: var(--text); }
+
+    .dlg-body { padding: 20px 22px 22px; }
+
+    /* form */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    input[type=text],
+    input[type=number],
+    select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      padding: 8px 11px;
+      transition: border-color .14s;
+      width: 100%;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+    select option { background: var(--surface); }
+
+    input[type=color] {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      height: 38px;
+      padding: 3px 5px;
+      width: 100%;
+    }
+
+    input[type=file] {
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    input[type=file]::-webkit-file-upload-button {
+      background: var(--border);
+      border: none;
+      border-radius: 5px;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 8px;
+      padding: 4px 10px;
+    }
+
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .submit {
+      background: var(--accent);
+      border: none;
+      border-radius: 9px;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 6px;
+      padding: 11px 16px;
+      transition: background .12s;
+      width: 100%;
+    }
+    .submit:hover { background: var(--acc-h); }
+    .submit:disabled { background: var(--faint); cursor: default; }
+
+    .sec-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 11px;
+      flex: 1;
+      transition: background .1s;
+    }
+    .sec-btn:hover { background: var(--border); }
+
+    .nudge {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1;
+      padding: 3px 9px;
+    }
+    .nudge:hover { background: var(--border); }
+
+    .btn-row { display: flex; gap: 8px; margin-bottom: 10px; }
+
+    .status {
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 10px;
+    }
+    .status:not(:empty) { padding: 8px 11px; }
+    .status.ok      { background: #ecfdf5; color: #065f46; }
+    .status.err     { background: #fef2f2; color: #991b1b; }
+    .status.working { background: #eef2ff; color: #3730a3; }
+
+    [data-theme="dark"] .status.ok      { background: #052e1c; color: #6ee7b7; }
+    [data-theme="dark"] .status.err     { background: #2d0b0b; color: #fca5a5; }
+    [data-theme="dark"] .status.working { background: #1a1854; color: #a5b4fc; }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 130px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .file-item {
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      cursor: grab;
+      display: flex;
+      font-size: 12px;
+      gap: 7px;
+      padding: 6px 10px;
+      user-select: none;
+    }
+    .file-item.dragging { opacity: 0.28; }
+    .handle { color: var(--faint); }
+
+    .page-tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .ptile {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: grab;
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 48px;
+      padding: 9px 12px;
+      text-align: center;
+      user-select: none;
+      transition: border-color .12s;
+    }
+    .ptile:hover { border-color: var(--accent); }
+    .ptile.dragging { opacity: 0.28; }
+
+    .rot-list {
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      max-height: 190px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    .rot-row {
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      font-size: 13px;
+      gap: 8px;
+      padding: 7px 12px;
+    }
+    .rot-row:last-child { border-bottom: none; }
+    .rot-row .pg { flex: 1; color: var(--muted); }
+    .rot-deg { color: var(--faint); font-size: 12px; min-width: 30px; text-align: center; }
+
+    .meta-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.9;
+      margin-bottom: 10px;
+      padding: 10px 13px;
+    }
+    .meta-box b { color: var(--muted); font-weight: 600; }
+
+    .hint   { color: var(--faint); font-size: 12px; line-height: 1.5; margin-bottom: 10px; }
+    .count  { color: var(--muted); font-size: 12px; margin-bottom: 10px; display: block; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--faint);
+      font-size: 12px;
+      padding: 18px 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">PDF Forge</span>
+  <div class="nav-sep"></div>
+  <span class="nav-note">everything runs in your browser</span>
+
+  <button class="theme-btn" id="theme-toggle">
+    <span class="theme-icon" id="theme-icon">&#9790;</span>
+    <span id="theme-label">dark</span>
+  </button>
+</nav>
+
+<main>
+  <div class="intro">
+    <h1>PDF tools.<br><span>No noise.</span></h1>
+    <p>Pick one below. Nothing leaves your machine.</p>
+  </div>
+
+  <div class="tools-wrap" id="tools-wrap"></div>
+</main>
+
+<div class="overlay" id="overlay">
+  <div class="dialog">
+    <div class="dlg-head">
+      <span class="dlg-title" id="dlg-title"></span>
+      <button class="dlg-close" id="dlg-close">x</button>
+    </div>
+    <div class="dlg-body" id="dlg-body"></div>
+  </div>
+</div>
+
+<footer>PDF Forge runs entirely in your browser. No server. No tracking. &nbsp;·&nbsp; Designed and built by a human &nbsp;<a href="https://github.com/AmruthaMuralidhar1" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:600">megkim</a></footer>
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+
+const TOOLS = [
+  { id: 'merge',    name: 'Merge PDFs',     desc: 'Combine multiple PDFs into one file.' },
+  { id: 'split',    name: 'Split PDF',       desc: 'Cut a PDF in two at a specific page.' },
+  { id: 'extract',  name: 'Extract pages',   desc: 'Pull out specific pages, like 1, 3, 5-8.' },
+  { id: 'reorder',  name: 'Reorder pages',   desc: 'Drag pages into a new order and export.' },
+  { id: 'rotate',   name: 'Rotate pages',    desc: 'Rotate individual pages or all of them.' },
+  { id: 'compress', name: 'Compress',        desc: 'Shrink the file size.' },
+  { id: 'pdf2img',  name: 'PDF to images',   desc: 'Export each page as PNG or JPEG.' },
+  { id: 'img2pdf',  name: 'Images to PDF',   desc: 'Combine JPEGs, PNGs, or WebPs into a PDF.' },
+  { id: 'metadata', name: 'Remove metadata', desc: 'Strip author, title, creator and more.' },
+  { id: 'watermark',name: 'Watermark',       desc: 'Stamp every page with custom text.' },
+];
+
+const wrap = document.getElementById('tools-wrap');
+
+TOOLS.forEach((t, i) => {
+  const row = document.createElement('button');
+  row.className = 'tool-row';
+  row.innerHTML = `
+    <span class="t-num">${String(i + 1).padStart(2, '0')}</span>
+    <span class="t-name">${t.name}</span>
+    <span class="t-desc">${t.desc}</span>
+    <span class="t-arrow">&#8594;</span>
+  `;
+  row.addEventListener('click', () => openDialog(t));
+  wrap.appendChild(row);
+});
+
+// dark mode
+const html = document.documentElement;
+const toggleBtn = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+const themeLabel = document.getElementById('theme-label');
+
+const saved = localStorage.getItem('pdf-forge-theme');
+if (saved) applyTheme(saved);
+
+function applyTheme(t) {
+  html.dataset.theme = t;
+  themeIcon.innerHTML = t === 'dark' ? '&#9788;' : '&#9790;';
+  themeLabel.textContent = t === 'dark' ? 'light' : 'dark';
+}
+
+toggleBtn.addEventListener('click', () => {
+  const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('pdf-forge-theme', next);
+});
+
+// dialog
+const overlay  = document.getElementById('overlay');
+const dlgTitle = document.getElementById('dlg-title');
+const dlgBody  = document.getElementById('dlg-body');
+
+document.getElementById('dlg-close').addEventListener('click', closeDialog);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeDialog(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDialog(); });
+
+function openDialog(tool) {
+  dlgTitle.textContent = tool.name;
+  dlgBody.innerHTML = '';
+  const fns = { merge, split, extract, reorder, rotate, compress, pdf2img, img2pdf, metadata, watermark };
+  fns[tool.id]?.(dlgBody);
+  overlay.classList.add('open');
+}
+
+function closeDialog() {
+  overlay.classList.remove('open');
+  dlgBody.innerHTML = '';
+}
+
+// utils
+function readFile(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsArrayBuffer(file);
+  });
+}
+
+function download(bytes, name) {
+  const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+  Object.assign(document.createElement('a'), { href: url, download: name }).click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function parseRange(str, max) {
+  const out = new Set();
+  str.split(',').map(s => s.trim()).filter(Boolean).forEach(p => {
+    if (p.includes('-')) {
+      let [a, b] = p.split('-').map(Number);
+      for (let i = a; i <= Math.min(b, max); i++) if (i >= 1) out.add(i);
+    } else {
+      const n = Number(p);
+      if (n >= 1 && n <= max) out.add(n);
+    }
+  });
+  return [...out].sort((a, b) => a - b);
+}
+
+function setStatus(el, msg, type) {
+  let s = el.querySelector('.status');
+  if (!s) { s = document.createElement('div'); el.appendChild(s); }
+  s.className = `status ${type}`;
+  s.textContent = msg;
+}
+
+function imgToBuffer(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      c.getContext('2d').drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b.arrayBuffer().then(res).catch(rej), 'image/png');
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('could not load ' + file.name)); };
+    img.src = url;
+  });
+}
+
+function dragH(item, wrap) {
+  item.addEventListener('dragstart', () => item.classList.add('dragging'));
+  item.addEventListener('dragend',   () => item.classList.remove('dragging'));
+  item.addEventListener('dragover', e => {
+    e.preventDefault();
+    const d = wrap.querySelector('.dragging');
+    if (!d || d === item) return;
+    const r = item.getBoundingClientRect();
+    wrap.insertBefore(d, e.clientX < r.left + r.width / 2 ? item : item.nextSibling);
+  });
+}
+
+function dragV(item, wrap) {
+  item.addEventListener('dragstart', () => item.classList.add('dragging'));
+  item.addEventListener('dragend',   () => item.classList.remove('dragging'));
+  item.addEventListener('dragover', e => {
+    e.preventDefault();
+    const d = wrap.querySelector('.dragging');
+    if (!d || d === item) return;
+    const r = item.getBoundingClientRect();
+    wrap.insertBefore(d, e.clientY < r.top + r.height / 2 ? item : item.nextSibling);
+  });
+}
+
+// tools
+
+function merge(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF files</label>
+      <input type="file" accept=".pdf" multiple id="m-in">
+    </div>
+    <div class="file-list" id="m-list"></div>
+    <button class="submit" id="m-go">merge files</button>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#m-in');
+  const list = el.querySelector('#m-list');
+
+  inp.addEventListener('change', () => {
+    list.innerHTML = [...inp.files].map(f =>
+      `<div class="file-item">&#128196; ${f.name}</div>`).join('');
+  });
+
+  el.querySelector('#m-go').addEventListener('click', async () => {
+    if (!inp.files.length) return setStatus(el, 'pick at least one file', 'err');
+    const btn = el.querySelector('#m-go');
+    btn.disabled = true;
+    setStatus(el, 'merging...', 'working');
+    try {
+      const out = await PDFLib.PDFDocument.create();
+      for (const f of inp.files) {
+        const src = await PDFLib.PDFDocument.load(await readFile(f));
+        (await out.copyPages(src, src.getPageIndices())).forEach(p => out.addPage(p));
+      }
+      download(await out.save(), 'merged.pdf');
+      setStatus(el, 'done, downloading now', 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function split(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="sp-in">
+    </div>
+    <span class="count" id="sp-ct"></span>
+    <div class="field">
+      <label>Split after page</label>
+      <input type="number" id="sp-at" min="1" placeholder="e.g. 3">
+    </div>
+    <p class="hint">Creates part1.pdf (pages 1 to N) and part2.pdf (N+1 to end).</p>
+    <button class="submit" id="sp-go">split</button>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#sp-in');
+  let n = 0;
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0]) return;
+    const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+    n = doc.getPageCount();
+    el.querySelector('#sp-ct').textContent = `${n} pages`;
+    el.querySelector('#sp-at').max = n - 1;
+  });
+
+  el.querySelector('#sp-go').addEventListener('click', async () => {
+    if (!inp.files[0]) return setStatus(el, 'pick a file first', 'err');
+    const at = parseInt(el.querySelector('#sp-at').value, 10);
+    if (!at || at < 1 || at >= n) return setStatus(el, `enter a number between 1 and ${n - 1}`, 'err');
+    const btn = el.querySelector('#sp-go');
+    btn.disabled = true;
+    setStatus(el, 'splitting...', 'working');
+    try {
+      const src = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+
+      const p1 = await PDFLib.PDFDocument.create();
+      (await p1.copyPages(src, [...Array(at).keys()])).forEach(p => p1.addPage(p));
+      download(await p1.save(), 'part1.pdf');
+
+      await new Promise(r => setTimeout(r, 80));
+
+      const p2 = await PDFLib.PDFDocument.create();
+      (await p2.copyPages(src, Array.from({ length: n - at }, (_, i) => i + at))).forEach(p => p2.addPage(p));
+      download(await p2.save(), 'part2.pdf');
+
+      setStatus(el, `part1.pdf (${at}pp) and part2.pdf (${n - at}pp) downloaded`, 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function extract(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="ex-in">
+    </div>
+    <span class="count" id="ex-ct"></span>
+    <div class="field">
+      <label>Pages, e.g. 1, 3, 5-8</label>
+      <input type="text" id="ex-rng" placeholder="1, 3, 5-8">
+    </div>
+    <button class="submit" id="ex-go">extract</button>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#ex-in');
+  let n = 0;
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0]) return;
+    const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+    n = doc.getPageCount();
+    el.querySelector('#ex-ct').textContent = `${n} pages`;
+  });
+
+  el.querySelector('#ex-go').addEventListener('click', async () => {
+    if (!inp.files[0]) return setStatus(el, 'pick a file first', 'err');
+    const pages = parseRange(el.querySelector('#ex-rng').value, n);
+    if (!pages.length) return setStatus(el, 'no valid pages in that range', 'err');
+    const btn = el.querySelector('#ex-go');
+    btn.disabled = true;
+    setStatus(el, 'extracting...', 'working');
+    try {
+      const src = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      const out = await PDFLib.PDFDocument.create();
+      (await out.copyPages(src, pages.map(p => p - 1))).forEach(p => out.addPage(p));
+      download(await out.save(), 'extracted.pdf');
+      setStatus(el, `${pages.length} page(s) extracted`, 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function reorder(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="ro-in">
+    </div>
+    <div class="page-tiles" id="ro-tiles"></div>
+    <p class="hint" id="ro-hint" style="display:none">drag the tiles into the order you want</p>
+    <button class="submit" id="ro-go" style="display:none">export</button>
+    <div class="status"></div>`;
+
+  const inp   = el.querySelector('#ro-in');
+  const tiles = el.querySelector('#ro-tiles');
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0]) return;
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      tiles.innerHTML = '';
+      for (let i = 1; i <= doc.getPageCount(); i++) {
+        const t = document.createElement('div');
+        t.className = 'ptile'; t.draggable = true; t.dataset.pg = i;
+        t.textContent = i;
+        dragH(t, tiles);
+        tiles.appendChild(t);
+      }
+      el.querySelector('#ro-hint').style.display = '';
+      el.querySelector('#ro-go').style.display = '';
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    }
+  });
+
+  el.querySelector('#ro-go').addEventListener('click', async () => {
+    const btn = el.querySelector('#ro-go');
+    btn.disabled = true;
+    setStatus(el, 'saving...', 'working');
+    try {
+      const src   = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      const order = [...tiles.querySelectorAll('.ptile')].map(t => +t.dataset.pg - 1);
+      const out   = await PDFLib.PDFDocument.create();
+      (await out.copyPages(src, order)).forEach(p => out.addPage(p));
+      download(await out.save(), 'reordered.pdf');
+      setStatus(el, 'done', 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function rotate(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="rt-in">
+    </div>
+    <div class="rot-list" id="rt-rows" style="display:none"></div>
+    <div class="btn-row" id="rt-all" style="display:none">
+      <button class="sec-btn" id="rt-cw">rotate all +90</button>
+      <button class="sec-btn" id="rt-ccw">rotate all -90</button>
+    </div>
+    <button class="submit" id="rt-go" style="display:none">export</button>
+    <div class="status"></div>`;
+
+  const inp  = el.querySelector('#rt-in');
+  const rows = el.querySelector('#rt-rows');
+  const rots = {};
+  let n = 0;
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0]) return;
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      n = doc.getPageCount();
+      for (let i = 1; i <= n; i++) rots[i] = 0;
+      rows.innerHTML = Array.from({ length: n }, (_, i) => `
+        <div class="rot-row">
+          <span class="pg">page ${i + 1}</span>
+          <button class="nudge" data-pg="${i+1}" data-d="-90">&#8634;</button>
+          <span class="rot-deg" data-pg="${i+1}">0&deg;</span>
+          <button class="nudge" data-pg="${i+1}" data-d="90">&#8635;</button>
+        </div>`).join('');
+      rows.style.display = '';
+      el.querySelector('#rt-all').style.display = '';
+      el.querySelector('#rt-go').style.display = '';
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    }
+  });
+
+  rows.addEventListener('click', e => {
+    const b = e.target.closest('[data-d]');
+    if (!b) return;
+    const pg = +b.dataset.pg;
+    rots[pg] = ((rots[pg] + +b.dataset.d) + 360) % 360;
+    rows.querySelector(`.rot-deg[data-pg="${pg}"]`).textContent = `${rots[pg]}°`;
+  });
+
+  const rotAll = d => {
+    for (let i = 1; i <= n; i++) {
+      rots[i] = (rots[i] + d + 360) % 360;
+      rows.querySelector(`.rot-deg[data-pg="${i}"]`).textContent = `${rots[i]}°`;
+    }
+  };
+
+  el.querySelector('#rt-cw').addEventListener('click',  () => rotAll(90));
+  el.querySelector('#rt-ccw').addEventListener('click', () => rotAll(-90));
+
+  el.querySelector('#rt-go').addEventListener('click', async () => {
+    const btn = el.querySelector('#rt-go');
+    btn.disabled = true;
+    setStatus(el, 'saving...', 'working');
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      doc.getPages().forEach((pg, i) => {
+        if (rots[i + 1]) pg.setRotation(PDFLib.degrees(rots[i + 1]));
+      });
+      download(await doc.save(), 'rotated.pdf');
+      setStatus(el, 'done', 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function compress(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="cmp-in">
+    </div>
+    <span class="count" id="cmp-sz"></span>
+    <div class="field">
+      <label>Mode</label>
+      <select id="cmp-mode">
+        <option value="streams">Object streams (best for text-heavy PDFs)</option>
+        <option value="meta">Strip metadata only</option>
+      </select>
+    </div>
+    <p class="hint">Client-side compression is limited. Image-heavy PDFs won't shrink much here.</p>
+    <button class="submit" id="cmp-go">compress</button>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#cmp-in');
+  let origSz = 0;
+
+  inp.addEventListener('change', () => {
+    origSz = inp.files[0]?.size || 0;
+    if (origSz) el.querySelector('#cmp-sz').textContent = `original: ${(origSz / 1024).toFixed(1)} KB`;
+  });
+
+  el.querySelector('#cmp-go').addEventListener('click', async () => {
+    if (!inp.files[0]) return setStatus(el, 'pick a file first', 'err');
+    const btn = el.querySelector('#cmp-go');
+    btn.disabled = true;
+    setStatus(el, 'compressing...', 'working');
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      doc.setTitle(''); doc.setAuthor(''); doc.setSubject('');
+      doc.setKeywords([]); doc.setProducer(''); doc.setCreator('');
+      const out = await doc.save({ useObjectStreams: el.querySelector('#cmp-mode').value === 'streams' });
+      const pct = ((origSz - out.byteLength) / origSz * 100).toFixed(1);
+      download(out, 'compressed.pdf');
+      setStatus(el, `${(out.byteLength / 1024).toFixed(1)} KB ${out.byteLength < origSz ? `(${pct}% smaller)` : '(no size change)'}`, 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function pdf2img(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="p2i-in">
+    </div>
+    <span class="count" id="p2i-ct"></span>
+    <div class="two">
+      <div class="field">
+        <label>Pages (blank for all)</label>
+        <input type="text" id="p2i-rng" placeholder="e.g. 1-3">
+      </div>
+      <div class="field">
+        <label>Format</label>
+        <select id="p2i-fmt">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Scale (1 = 96dpi, 2 = 192dpi)</label>
+      <input type="number" id="p2i-sc" value="2" min="1" max="4" step="0.5">
+    </div>
+    <button class="submit" id="p2i-go">convert</button>
+    <p class="hint" id="p2i-prog"></p>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#p2i-in');
+  let n = 0;
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0] || !window.pdfjsLib) return;
+    try {
+      const pdf = await pdfjsLib.getDocument({ data: await readFile(inp.files[0]) }).promise;
+      n = pdf.numPages;
+      el.querySelector('#p2i-ct').textContent = `${n} pages`;
+    } catch(e) {}
+  });
+
+  el.querySelector('#p2i-go').addEventListener('click', async () => {
+    if (!inp.files[0]) return setStatus(el, 'pick a file first', 'err');
+    if (!window.pdfjsLib) return setStatus(el, 'PDF.js failed to load, check your connection', 'err');
+
+    const btn = el.querySelector('#p2i-go');
+    btn.disabled = true;
+    setStatus(el, 'loading...', 'working');
+    try {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      const pdf   = await pdfjsLib.getDocument({ data: await readFile(inp.files[0]) }).promise;
+      const total = pdf.numPages;
+      const rng   = el.querySelector('#p2i-rng').value.trim();
+      const pages = rng ? parseRange(rng, total) : Array.from({ length: total }, (_, i) => i + 1);
+      const fmt   = el.querySelector('#p2i-fmt').value;
+      const sc    = parseFloat(el.querySelector('#p2i-sc').value) || 2;
+      const ext   = fmt === 'image/png' ? 'png' : 'jpg';
+      const prog  = el.querySelector('#p2i-prog');
+
+      for (let i = 0; i < pages.length; i++) {
+        prog.textContent = `rendering ${i + 1} of ${pages.length}...`;
+        const pg = await pdf.getPage(pages[i]);
+        const vp = pg.getViewport({ scale: sc });
+        const cv = document.createElement('canvas');
+        cv.width = vp.width; cv.height = vp.height;
+        await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+        Object.assign(document.createElement('a'), {
+          href: cv.toDataURL(fmt, 0.92),
+          download: `page-${String(pages[i]).padStart(3, '0')}.${ext}`
+        }).click();
+        await new Promise(r => setTimeout(r, 100));
+      }
+      prog.textContent = '';
+      setStatus(el, `${pages.length} image(s) downloaded`, 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function img2pdf(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>Images</label>
+      <input type="file" accept="image/*" multiple id="i2p-in">
+    </div>
+    <div class="file-list" id="i2p-list"></div>
+    <p class="hint" id="i2p-hint" style="display:none">drag rows to reorder</p>
+    <button class="submit" id="i2p-go">create PDF</button>
+    <div class="status"></div>`;
+
+  const inp  = el.querySelector('#i2p-in');
+  const list = el.querySelector('#i2p-list');
+  let files  = [];
+
+  inp.addEventListener('change', () => {
+    files = [...inp.files];
+    list.innerHTML = files.map((f, i) =>
+      `<div class="file-item" draggable="true" data-i="${i}">
+         <span class="handle">&#8942;</span> ${f.name}
+       </div>`
+    ).join('');
+    list.querySelectorAll('.file-item').forEach(item => dragV(item, list));
+    el.querySelector('#i2p-hint').style.display = files.length > 1 ? '' : 'none';
+  });
+
+  el.querySelector('#i2p-go').addEventListener('click', async () => {
+    if (!files.length) return setStatus(el, 'pick at least one image', 'err');
+    const btn = el.querySelector('#i2p-go');
+    btn.disabled = true;
+    setStatus(el, 'building PDF...', 'working');
+    const ordered = [...list.querySelectorAll('.file-item')].map(item => files[+item.dataset.i]);
+    try {
+      const doc = await PDFLib.PDFDocument.create();
+      for (const f of ordered) {
+        const buf = await imgToBuffer(f);
+        const img = await doc.embedPng(buf);
+        doc.addPage([img.width, img.height]).drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+      }
+      download(await doc.save(), 'images.pdf');
+      setStatus(el, `${ordered.length} image(s) combined`, 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function metadata(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="md-in">
+    </div>
+    <div class="meta-box" id="md-box" style="display:none"></div>
+    <button class="submit" id="md-go" style="display:none">strip metadata</button>
+    <div class="status"></div>`;
+
+  const inp = el.querySelector('#md-in');
+  const box = el.querySelector('#md-box');
+  const btn = el.querySelector('#md-go');
+
+  inp.addEventListener('change', async () => {
+    if (!inp.files[0]) return;
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      const fields = {
+        Title:    doc.getTitle(),
+        Author:   doc.getAuthor(),
+        Subject:  doc.getSubject(),
+        Keywords: doc.getKeywords(),
+        Creator:  doc.getCreator(),
+        Producer: doc.getProducer(),
+      };
+      const found = Object.entries(fields).filter(([, v]) => v);
+      box.innerHTML = found.length
+        ? found.map(([k, v]) => `<div><b>${k}:</b> ${v}</div>`).join('')
+        : '<span style="color:var(--faint)">no metadata found</span>';
+      box.style.display = '';
+      btn.style.display = '';
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    }
+  });
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    setStatus(el, 'stripping...', 'working');
+    try {
+      const doc = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      doc.setTitle(''); doc.setAuthor(''); doc.setSubject('');
+      doc.setKeywords([]); doc.setCreator(''); doc.setProducer('');
+      doc.setCreationDate(new Date(0)); doc.setModificationDate(new Date(0));
+      download(await doc.save(), 'cleaned.pdf');
+      box.innerHTML = '<span style="color:var(--faint)">all clear</span>';
+      setStatus(el, 'metadata removed', 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function watermark(el) {
+  el.innerHTML = `
+    <div class="field">
+      <label>PDF file</label>
+      <input type="file" accept=".pdf" id="wm-in">
+    </div>
+    <div class="field">
+      <label>Text</label>
+      <input type="text" id="wm-txt" value="CONFIDENTIAL">
+    </div>
+    <div class="two">
+      <div class="field">
+        <label>Size</label>
+        <input type="number" id="wm-sz" value="60" min="10" max="200">
+      </div>
+      <div class="field">
+        <label>Opacity</label>
+        <input type="number" id="wm-op" value="0.2" min="0.05" max="1" step="0.05">
+      </div>
+    </div>
+    <div class="two">
+      <div class="field">
+        <label>Color</label>
+        <input type="color" id="wm-clr" value="#ff0000">
+      </div>
+      <div class="field">
+        <label>Position</label>
+        <select id="wm-pos">
+          <option value="center">diagonal center</option>
+          <option value="top">top</option>
+          <option value="bottom">bottom</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit" id="wm-go">add watermark</button>
+    <div class="status"></div>`;
+
+  el.querySelector('#wm-go').addEventListener('click', async () => {
+    const inp = el.querySelector('#wm-in');
+    if (!inp.files[0]) return setStatus(el, 'pick a file first', 'err');
+    const txt = el.querySelector('#wm-txt').value.trim();
+    if (!txt) return setStatus(el, 'enter some text', 'err');
+    const btn = el.querySelector('#wm-go');
+    btn.disabled = true;
+    setStatus(el, 'adding watermark...', 'working');
+    try {
+      const doc  = await PDFLib.PDFDocument.load(await readFile(inp.files[0]));
+      const font = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+      const sz   = parseInt(el.querySelector('#wm-sz').value, 10) || 60;
+      const op   = parseFloat(el.querySelector('#wm-op').value) || 0.2;
+      const hex  = el.querySelector('#wm-clr').value;
+      const clr  = PDFLib.rgb(
+        parseInt(hex.slice(1,3), 16) / 255,
+        parseInt(hex.slice(3,5), 16) / 255,
+        parseInt(hex.slice(5,7), 16) / 255
+      );
+      const pos  = el.querySelector('#wm-pos').value;
+      const tw   = font.widthOfTextAtSize(txt, sz);
+
+      for (const pg of doc.getPages()) {
+        const { width, height } = pg.getSize();
+        let x, y, rotate;
+        if (pos === 'center') {
+          x = (width - tw) / 2; y = height / 2; rotate = PDFLib.degrees(45);
+        } else if (pos === 'top') {
+          x = (width - tw) / 2; y = height - sz - 20; rotate = PDFLib.degrees(0);
+        } else {
+          x = (width - tw) / 2; y = 20; rotate = PDFLib.degrees(0);
+        }
+        pg.drawText(txt, { x, y, size: sz, font, color: clr, opacity: op, rotate });
+      }
+      download(await doc.save(), 'watermarked.pdf');
+      setStatus(el, 'done', 'ok');
+    } catch(e) {
+      setStatus(el, e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+</script>
+</body>
+</html>
